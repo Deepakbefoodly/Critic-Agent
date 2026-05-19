@@ -57,11 +57,9 @@ async def synthesise(
     critic_output: CriticOutput,
     gap_output: GapOutput,
     artifact_type: str,
-    **_kwargs,
 ) -> tuple[NextStep, str]:
     """
     Merge critic scores + gap analysis -> next step + proof-of-work verdict.
-    Uses full critic LLM (gemini-2.0-flash).
     """
     settings = get_settings()
     llm = get_critic_llm()

@@ -8,7 +8,7 @@ class ArtifactType(str, Enum):
     BRIEF = "brief"
     DRAFT = "draft"
     ESSAY = "essay"
-    AUTO = "auto"  # let rubric builder infer
+    AUTO = "auto"
 
 
 class EvaluateRequest(BaseModel):
@@ -48,7 +48,7 @@ class DimensionScore(BaseModel):
     dimension: str
     score: int = Field(..., ge=1, le=5)
     rationale: str
-    evidence: str  # specific quote/reference from artifact
+    evidence: str
 
 
 class CriticOutput(BaseModel):

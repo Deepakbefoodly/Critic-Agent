@@ -3,10 +3,6 @@ LangChain model factory.
 
 All agents import get_critic_llm() or get_fast_llm() from here.
 Switching providers (e.g. OpenAI, Anthropic) only requires changing this file.
-
-Model tier:
-  critic_llm  → gemini-2.0-flash          (used by critic + synthesiser)
-  fast_llm    → gemini-2.0-flash-lite      (used by rubric builder + gap detector)
 """
 
 import os

@@ -14,9 +14,9 @@ async def run_evaluation_pipeline(request: EvaluateRequest) -> EvaluationReport:
     """
     Full evaluation pipeline:
 
-    1. Build rubric           (fast model, sequential -- critic needs it)
-    2. Critic + gap detector  (PARALLEL -- tradeoff: -2s latency vs coherence)
-    3. Synthesis + self-eval  (PARALLEL)
+    1. Build rubric
+    2. Critic + gap detector
+    3. Synthesis + self-eval
     4. Assemble final report
 
     Failure handling:
@@ -25,8 +25,7 @@ async def run_evaluation_pipeline(request: EvaluateRequest) -> EvaluationReport:
     - Gap detector failure    -> fallback gap output, pipeline continues
     - Synthesis failure       -> re-raises (fatal: can't produce verdict)
     """
-
-    # ── Step 1: Rubric ────────────────────────────────────────────────────────
+    # Step 1: Build Rubric
     logger.info("Building rubric for artifact type: %s", request.artifact_type)
     try:
         rubric = await build_rubric(
@@ -43,7 +42,7 @@ async def run_evaluation_pipeline(request: EvaluateRequest) -> EvaluationReport:
         logger.warning("Rubric builder failed (%s). Using fallback rubric.", e)
         rubric = get_fallback_rubric(request.artifact_type)
 
-    # ── Step 2: Critic + Gap detector in parallel ─────────────────────────────
+    # Step 2: Critic + Gap detector in parallel
     logger.info("Running critic and gap detector in parallel")
 
     results = await asyncio.gather(
@@ -65,6 +64,7 @@ async def run_evaluation_pipeline(request: EvaluateRequest) -> EvaluationReport:
     if isinstance(results[0], Exception):
         logger.error("Critic agent failed: %s", results[0])
         raise results[0]
+
     critic_output = results[0]
     logger.info("Critic done. Overall score: %.2f", critic_output.overall_score)
 
@@ -80,7 +80,7 @@ async def run_evaluation_pipeline(request: EvaluateRequest) -> EvaluationReport:
         gap_output.completeness_score,
     )
 
-    # ── Step 3: Synthesis + self-eval in parallel ─────────────────────────────
+    # Step 3: Synthesis + self-eval in parallel
     logger.info("Running synthesis and self-eval in parallel")
 
     synth_results = await asyncio.gather(
@@ -120,7 +120,7 @@ async def run_evaluation_pipeline(request: EvaluateRequest) -> EvaluationReport:
     else:
         logger.warning("Self-eval failed: %s", synth_results[1])
 
-    # ── Step 4: Final report ──────────────────────────────────────────────────
+    # Step 4: Final report
     report = build_report(
         rubric=rubric,
         critic_output=critic_output,

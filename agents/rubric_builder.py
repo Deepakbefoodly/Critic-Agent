@@ -53,7 +53,6 @@ async def build_rubric(
     artifact: str,
     artifact_type: ArtifactType,
     context: str | None,
-    **_kwargs,
 ) -> RubricOutput:
     settings = get_settings()
     llm = get_fast_llm()

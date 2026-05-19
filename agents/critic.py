@@ -60,10 +60,9 @@ async def run_critic(
     artifact_type: str,
     context: str | None,
     shuffle_dimensions: bool = False,
-    **_kwargs,
 ) -> CriticOutput:
     """
-    Score artifact on each rubric dimension.
+    Score an artifact on each rubric dimension.
     Uses full critic LLM (gemini-2.0-flash by default).
     shuffle_dimensions=True is used by the self-eval consistency check.
     """

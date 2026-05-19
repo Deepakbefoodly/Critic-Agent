@@ -54,11 +54,9 @@ async def detect_gaps(
     artifact: str,
     artifact_type: str,
     context: str | None,
-    **_kwargs,
 ) -> GapOutput:
     """
     Identify what's missing. Runs in parallel with the critic.
-    Uses fast LLM (gemini-2.0-flash-lite).
     """
     settings = get_settings()
     llm = get_fast_llm()

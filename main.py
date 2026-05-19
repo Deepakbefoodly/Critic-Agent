@@ -27,12 +27,11 @@ async def lifespan(app: FastAPI):
     settings = get_settings()
     if not settings.google_api_key:
         logger.warning("GOOGLE_API_KEY not set. Requests will fail.")
-    logger.info(
-        "Starting flo101 Critic Agent | critic=%s fast=%s",
-        settings.critic_model,
-        settings.fast_model,
-    )
+
+    logger.info("Starting flo101 Critic Agent")
+
     yield
+
     logger.info("Shutting down.")
 
 
@@ -42,7 +41,7 @@ app = FastAPI(
         "Multi-agent evaluation pipeline powered by LangChain + Gemini. "
         "Rubric builder -> critic + gap detector (parallel) -> synthesis."
     ),
-    version="2.0.0",
+    version="1.0.0",
     lifespan=lifespan,
 )
 
@@ -68,7 +67,7 @@ async def validation_error_handler(request: Request, exc: ValidationError):
 
 @app.get("/health", response_model=HealthResponse, tags=["Health"])
 async def health():
-    return HealthResponse(status="ok", version="2.0.0")
+    return HealthResponse(status="ok", version="1.0.0")
 
 
 @app.post(
@@ -86,10 +85,6 @@ async def health():
 async def evaluate(request: EvaluateRequest):
     """
     Run the full Critic Agent & Proof-of-Work evaluation pipeline.
-
-    Powered by LangChain with Google Gemini as the LLM provider.
-    - Fast agents (rubric builder, gap detector): gemini-2.0-flash-lite
-    - Quality agents (critic, synthesis): gemini-2.0-flash
     """
     try:
         return await run_evaluation_pipeline(request)

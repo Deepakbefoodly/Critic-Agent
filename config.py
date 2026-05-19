@@ -7,7 +7,6 @@ class Settings(BaseSettings):
     google_api_key: str = ""
 
     # LangChain model names — both map to Gemini by default.
-    # Swap critic_model to a heavier variant (e.g. gemini-1.5-pro) if needed.
     critic_model: str = "gemini-2.0-flash"   # full quality: critic + synthesis
     fast_model: str = "gemini-2.0-flash-lite" # cheap + fast: rubric builder + gap detector
 
